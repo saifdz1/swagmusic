@@ -51,30 +51,50 @@ if(message.content.split(' ')[0] == '-bc') {
 })
 
 
+client.on("guildMemberAdd", member => {
+  var embed = new Discord.RichEmbed() 
+    .setThumbnail(member.user.avatarURL) 
+    .addField("**Welcome To Discord Server **", member.user.username) 
+    .setColor("#0984e3") 
+    .setImage("https://cdn.discordapp.com/attachments/607046676984758383/650554313818767361/p_1225y7yza1.gif");
+  var channel = member.guild.channels.find("name", "welcome"); // اسم الروم 
+  if (!channel) return; 
+  channel.send({ embed: embed }); 
+}); 
+const invites = {}; 
+const wait = require("util").promisify(setTimeout); 
+client.on("ready", () => {
+  wait(1000); 
+  client.guilds.forEach(king => {
+    king.fetchInvites().then(guildInvites => {
+      invites[king.id] = guildInvites; 
+    }); 
+  }); 
+}); 
+client.on("guildMemberAdd", member => {
+ 
+  member.guild.fetchInvites().then(guildInvites => {
+    
+    const gamer = invites[member.guild.id]; 
+    invites[member.guild.id] = guildInvites; 
+    const invite = guildInvites.find(i => gamer.get(i.code).uses < i.uses); 
+    const inviter = client.users.get(invite.inviter.id);
+    const welcome = member.guild.channels.find(
+    
+      channel => channel.name === "general" 
+    ); 
+    welcome.send(
+      ` <@${member.id}> **invited by** <@${inviter.id}> , **Total Invites** ${invite.uses}`
+    ); 
+  }); 
+}); 
 
-// Premuim Member //
-const adminprefix = "%";
-const devs = ['393146237752442883'];
-client.on('message', message => {
-  var argresult = message.content.split(` `).slice(1).join(' ');
-    if (!devs.includes(message.author.id)) return;
-if (message.content.startsWith(adminprefix + 'playing')) {
-  client.user.setGame(argresult)
-    message.channel.sendMessage(`**:white_check_mark: , The Playing Status Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
-} else 
-  if (message.content.startsWith(adminprefix + 'rename')) {
-client.user.setUsername(argresult).
-    message.channel.sendMessage(`**:white_check_mark: , The Name Of The Bot Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
-} else
-  if (message.content.startsWith(adminprefix + 'setstatus')) {
-client.user.setStatus(argresult)
-    message.channel.sendMessage(`**:white_check_mark: , The Bot Status Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
-} else
-if (message.content.startsWith(adminprefix + 'stream')) {
-  client.user.setGame(argresult, "https://www.twitch.tv/SaifDz")
-    message.channel.sendMessage(`**:white_check_mark: , The Stream Bot Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
-}
-});
+
+
+
+//Alpha Team copyRight 2019
+
+
 
 
 client.login(process.env.BOT_TOKEN);
