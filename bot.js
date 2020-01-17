@@ -27,101 +27,27 @@ client.on('ready', () => {
   console.log('')
 });
  
-/*
-const ytdl = require("ytdl-core");
-const { Client, Util } = require('discord.js');
-const getYoutubeID = require('get-youtube-id');
-const fetchVideoInfo = require('youtube-info');
-const YouTube = require('simple-youtube-api');
-const youtube = new YouTube("AIzaSyAdORXg7UZUo7sePv97JyoDqtQVi3Ll0b8");
-const queue = new Map();
- */
- 
- 
- 
-client.on("message", async message => {
-    var command = message.content.split(" ")[0];
-    command = command.slice(prefix.length);
-        if(!message.channel.guild) return;
-            var args = message.content.split(" ").slice(1).join(" ");
-            if(command == "+bc") {
-                if(!message.member.hasPermission("ADMINISTRATOR")) {
-                    return message.channel.send("**للأسف لا تمتلك صلاحية `ADMINISTRATOR`**");
-                }
-                    if(!args) {
-                        return message.reply("**يجب عليك كتابة كلمة او جملة لإرسال البرودكاست**");
-                    }
-                        message.channel.send(`**هل أنت متأكد من إرسالك البرودكاست؟nمحتوى البرودكاست: `${args}`**`).then(m => {
-                            m.react("✅")
-                            .then(() => m.react("❌"));
+client.on('message', message => {
+   let embed = new Discord.RichEmbed()
 
-                            let yesFilter = (reaction, user) => reaction.emoji.name == "✅" && user.id == message.author.id;
-                            let noFiler = (reaction, user) => reaction.emoji.name == "❌" && user.id == message.author.id;
-
-                            let yes = m.createReactionCollector(yesFilter);
-                            let no = m.createReactionCollector(noFiler);
-
-                            yes.on("collect", v => {
-                                m.delete();
-                                    message.channel.send(`:ballot_box_with_check: | Done ... The Broadcast Message Has Been Sent For ${message.guild.memberCount} Members`).then(msg => msg.delete(5000));
-                                        message.guild.members.forEach(member => {
-                                            let bc = new Discord.RichEmbed()
-                                            .setColor("RANDOM")
-                                            .setThumbnail(message.author.avatarURL)
-                                            .setTitle("Broadcast")
-                                            .addField("Server", message.guild.name)
-                                            .addField("Sender", message.author.username)
-                                            .addField("Message", args);
-
-                                            member.sendEmbed(bc);
-                                        });
-                        });
-                        no.on("collect", v => {
-                            m.delete();
-                            message.channel.send("**Broadcast Canceled.**").then(msg => msg.delete(3000));
-                        });
-                            
-                        });
-            }
-            if(command == "+bco") {
-                if(!message.member.hasPermission("ADMINISTRATOR")) {
-                    return message.channel.send("**للأسف لا تمتلك صلاحية `ADMINISTRATOR`**");
-                }
-                    if(!args) {
-                        return message.reply("**يجب عليك كتابة كلمة او جملة لإرسال البرودكاست**");
-                    }
-                        message.channel.send(`**هل أنت متأكد من إرسالك البرودكاست؟nمحتوى البرودكاست: `${args}`**`).then(m => {
-                            m.react("✅")
-                            .then(() => m.react("❌"));
-
-                            let yesFilter = (reaction, user) => reaction.emoji.name == "✅" && user.id == message.author.id;
-                            let noFiler = (reaction, user) => reaction.emoji.name == "❌" && user.id == message.author.id;
-
-                            let yes = m.createReactionCollector(yesFilter);
-                            let no = m.createReactionCollector(noFiler);
-
-                            yes.on("collect", v => {
-                                m.delete();
-                                    message.channel.send(`:ballot_box_with_check: | Done ... The Broadcast Message Has Been Sent For ${message.guild.members.filter(r => r.presence.status !== "offline").size} Members`).then(msg => msg.delete(5000));
-                                        message.guild.members.filter(r => r.presence.status !== "offline").forEach(member => {
-                                            let bco = new Discord.RichEmbed()
-                                            .setColor("RANDOM")
-                                            .setThumbnail(message.author.avatarURL)
-                                            .setTitle("Broadcast")
-                                            .addField("Server", message.guild.name)
-                                            .addField("Sender", message.author.username)
-                                            .addField("Message", args);
-
-                                            member.sendEmbed(bco);
-                                        });
-                        });
-                        no.on("collect", v => {
-                            m.delete();
-                            message.channel.send("**Broadcast Canceled.**").then(msg => msg.delete(3000));
-                        });
-                            
-                        });
-            }
-});
+    let args = message.content.split(' ').slice(1).join(' ');
+     if(!message.channel.guild) return;
+if(message.content.split(' ')[0] == '-bc') {
+         message.react("✔️")
+          let embed = new Discord.RichEmbed()
+    .setColor("#FF00FF")
+    .setThumbnail(message.author.avatarURL)   
+                                      .addField('تم الارسال بواسطة :', "<@" + message.author.id + ">")
+                 message.channel.sendEmbed(embed);
+        message.guild.members.forEach(m => {
+            var bc = new Discord.RichEmbed()
+.addField('**● Sender  :**', `*** → ${message.author.username}#${message.author.discriminator}***`)
+            .addField('***● Server  :***', `*** → ${message.guild.name}***`)               
+    .setColor('#ff0000')
+                 .addField('ّ', args)
+            m.send(``,{embed: bc});
+        });
+    }
+})
 
 client.login(process.env.BOT_TOKEN);
