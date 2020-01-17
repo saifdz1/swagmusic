@@ -52,8 +52,8 @@ if(message.content.split(' ')[0] == '-bc') {
 
 
 
-const bugs = require("./Report.json")
-const fs = require("fs")
+const bugs = require("./Report.json");
+const fs = require("fs");
 var prefix = "-";
  
 client.on("message", TheReport => {
