@@ -50,31 +50,82 @@ if(message.content.split(' ')[0] == '-bc') {
     }
 })
 
-client.on('message' , message => {
-      var prefix = "-";
-      if(message.author.bot) return;
-     
-      if(message.content.startsWith(prefix + "bcrole")) {
-        if (!message.member.hasPermission("ADMINISTRATOR"))  return;
-        let args = message.content.split(" ").slice(2);
-     var codes = args.join(' ')
-       
-        if(!codes) {
-          message.channel.send("قم بكتابة الرسالة | `$rolebc role message`")
-            return;
-        }
-     
-     
-              var role = message.mentions.roles.first();
-                if(!role) {
-                  message.reply("لا توجد رتبة بهذا الاسم")
-                    return;
-                }
-            message.guild.members.filter(m => m.roles.get(role.id)).forEach(n => {
-              n.send(`${codes}`)
-            })
-            message.channel.send(`لقد تم ارسال هذه الرسالة الى ${message.guild.members.filter(m => m.roles.get(role.id)).size} عضو`)
-        }
-    });
+
+
+const bugs = require("./Report.json")
+const fs = require("fs")
+var prefix = "-";
+ 
+client.on("message", TheReport => {
+ 
+  const args = TheReport.content.slice(prefix.length).trim().split(/ +/g);
+ 
+if(TheReport.content.startsWith(prefix + "report")) {
+  TheReport.delete();
+  if(TheReport.content === '${prefix}report') return TheReport.channel.send("**write your bug**").then(msgR =>msgR.delete(4000));
+ bugs[TheReport.author.id] = {
+  message: args.slice(1).join(""),
+  by: TheReport.author.id
+ }
+fs.writeFile("./Report.json", JSON.stringify(bugs, null , 4), err =>{
+  console.log(err);
+  })
+  }
+ 
+}
+ 
+ 
+ 
+)
+ 
+client.on("message", msg => {
+  if(msg.author.id != "393146237752442883") return msg.channel.send("you cant do this command").then(newmessage =>newmessage.delete(4000));
+  if (msg.content.startsWith(prefix + "bugs")){
+    msg.delete();
+    let data = undefined;
+  for(i in bugs){
+      if (data === undefined) {
+        data = "";
+      }
+      let data1 = bugs[i].message
+      let data2 = bugs[i].by
+      const stuff = `${data1} **By** <@${data2}>`;
+      data += (stuff) + "n";
+    }
+    if (data !== undefined) {
+      const richEmbed = new Discord.RichEmbed();
+      richEmbed.addField("Messages", data)
+      msg.channel.send(richEmbed)
+    }
+  }
+})
+
+
+
+
+// Premuim Member //
+const adminprefix = "%";
+const devs = ['393146237752442883'];
+client.on('message', message => {
+  var argresult = message.content.split(` `).slice(1).join(' ');
+    if (!devs.includes(message.author.id)) return;
+if (message.content.startsWith(adminprefix + 'playing')) {
+  client.user.setGame(argresult)
+    message.channel.sendMessage(`**:white_check_mark: , The Playing Status Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
+} else 
+  if (message.content.startsWith(adminprefix + 'rename')) {
+client.user.setUsername(argresult).
+    message.channel.sendMessage(`**:white_check_mark: , The Name Of The Bot Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
+} else
+  if (message.content.startsWith(adminprefix + 'setstatus')) {
+client.user.setStatus(argresult)
+    message.channel.sendMessage(`**:white_check_mark: , The Bot Status Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
+} else
+if (message.content.startsWith(adminprefix + 'stream')) {
+  client.user.setGame(argresult, "https://www.twitch.tv/SaifDz")
+    message.channel.sendMessage(`**:white_check_mark: , The Stream Bot Has Been Changed To : ${argresult}**`).then(message => {message.delete(6000)})
+}
+});
+
 
 client.login(process.env.BOT_TOKEN);
