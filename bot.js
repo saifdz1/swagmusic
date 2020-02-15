@@ -54,7 +54,7 @@ if(message.content.split(' ')[0] == '-bc') {
 client.on("guildMemberAdd", member => {
   var embed = new Discord.RichEmbed() 
     .setThumbnail(member.user.avatarURL) 
-    .addField("**Welcome To ${msg.guild.name} **", ${msg.guild.name}, member.user.username) 
+    .addField("**Welcome To **", ${member.guild.name}, member.user.username) 
     .setColor("#0984e3") 
     .setImage("https://cdn.discordapp.com/attachments/607046676984758383/650554313818767361/p_1225y7yza1.gif");
   var channel = member.guild.channels.find("name", "welcome"); // اسم الروم 
